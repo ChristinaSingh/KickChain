@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "783897051932",
+    "project_id": "kickchain-app",
+    "storage_bucket": "kickchain-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:783897051932:android:120d0550e49b87b3ec30d9",
+        "android_client_info": {
+          "package_name": "com.kickchain.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpybvDBqwvLnKaWJwBmTgyGBghGTT7_gY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

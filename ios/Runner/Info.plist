@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>Kickchain</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>kickchain</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(FLUTTER_BUILD_NAME)</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+
+	<!-- ========================================== -->
+	<!-- REOWN APPKIT CONFIGURATION                -->
+	<!-- ========================================== -->
+
+	<!-- Custom URL schemes for deep linking -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<!-- Your app's custom scheme -->
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.yourcompany.kickchain</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>kickchain</string>
+			</array>
+		</dict>
+		<!-- WalletConnect scheme -->
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>walletconnect</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>wc</string>
+			</array>
+		</dict>
+	</array>
+
+	<!-- Allow querying installed wallet apps -->
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<!-- WalletConnect -->
+		<string>wc</string>
+
+		<!-- Popular Wallets -->
+		<string>metamask</string>
+		<string>trust</string>
+		<string>rainbow</string>
+		<string>uniswap</string>
+		<string>zerion</string>
+		<string>ledgerlive</string>
+		<string>safe</string>
+		<string>imtokenv2</string>
+		<string>tokenpocket</string>
+		<string>exodus</string>
+		<string>blockchain</string>
+		<string>coinbase</string>
+		<string>binance</string>
+		<string>crypto</string>
+		<string>argent</string>
+		<string>pillar</string>
+		<string>gnosis</string>
+		<string>spot</string>
+		<string>alphawallet</string>
+		<string>dcentwallet</string>
+		<string>onto</string>
+		<string>safepal</string>
+	</array>
+
+	<!-- Universal Links (App Links) - Optional but Recommended -->
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:kickchain.io</string>
+		<string>applinks:www.kickchain.io</string>
+	</array>
+
+	<!-- Allow HTTP connections for local development (Remove in production) -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+		<!-- Or use this for specific domains in production: -->
+		<!--
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>kickchain.io</key>
+			<dict>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+			</dict>
+		</dict>
+		-->
+	</dict>
+
+	<!-- Camera and Photo Library (if your app needs these) -->
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs camera access to scan QR codes for wallet connections</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs photo library access to select QR codes</string>
+
+	<!-- Face ID (if using biometric auth) -->
+	<key>NSFaceIDUsageDescription</key>
+	<string>This app uses Face ID for secure authentication</string>
+
+</dict>
+</plist>

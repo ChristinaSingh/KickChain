@@ -1,0 +1,742 @@
+import 'dart:ui';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:kickchain/app/common/common_widgets.dart';
+import 'package:kickchain/app/data/constants/icons_constant.dart';
+
+import '../../../common/colors.dart';
+import '../controllers/profile_s_creen_controller.dart';
+
+// ── Inline color constants (matches your colors.dart) ────────────────────────
+const Color _bgGradientTop = Color(0xFF1D8C01);
+const Color _bgGradientBottom = Color(0xFF041A0B);
+const Color _accentGreen = Color(0xFF5DCF00);
+
+const Color _cardBg = Color(0x1AFFFFFF);
+
+const Color _gradBorderTop = Color(0xFF5DCF00);
+const Color _gradBorderBottom = Color(0xFF0B826F);
+const Color _textWhite = Color(0xFFFFFFFF);
+const Color _textGrey = Color(0xFFADA4A5);
+
+const Color _txPositive = Color(0xFF6EC21B);
+const Color _txNegative = Color(0xFFE53935);
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  ProfileScreenView
+// ─────────────────────────────────────────────────────────────────────────────
+class ProfileScreenView extends GetView<ProfileScreenController> {
+  const ProfileScreenView({super.key});
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      body: Stack(
+        children: [
+          // ── Background gradient ──────────────────────────────────────────
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [_bgGradientTop, _bgGradientBottom],
+                stops: [0.0, 1.0],
+              ),
+            ),
+          ),
+
+          // ── Radial glow top-left ─────────────────────────────────────────
+          Positioned(
+            top: -60,
+            left: -60,
+            child: Container(
+              width: 300,
+              height: 300,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [_accentGreen.withValues(alpha: 0.20), Colors.transparent],
+                ),
+              ),
+            ),
+          ),
+
+          // ── Football decoration — top right ──────────────────────────────
+          Positioned(top: -10, right: -18, child: _FootballDecoration()),
+
+          // ── Scrollable body ──────────────────────────────────────────────
+          SafeArea(
+            child: CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate([
+                      const SizedBox(height: 10),
+
+                      // ── Page title ─────────────────────────────────────
+                      Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () => Get.back(),
+                            child: Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: glassBg,
+                                shape: BoxShape.circle,
+                                border: Border.all(color: glassBorder),
+                              ),
+                              child: const Icon(Icons.arrow_back_rounded,
+                                  color: Colors.white, size: 20),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          const Text(
+                            'Profile',
+                            style: TextStyle(
+                              color: _textWhite,
+                              fontSize: 28,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 0.3,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+
+                      // ── Profile card ───────────────────────────────────
+                      _ProfileCard(controller: controller),
+                      const SizedBox(height: 24),
+
+                      // ── Statistics ─────────────────────────────────────
+                      _SectionHeader(title: 'Statistics'),
+                      const SizedBox(height: 12),
+                      _StatisticsGrid(controller: controller),
+                      const SizedBox(height: 24),
+
+                      // ── Achievements ───────────────────────────────────
+                      _SectionHeader(title: 'Achievements'),
+                      const SizedBox(height: 12),
+                      _AchievementsGrid(controller: controller),
+                      const SizedBox(height: 24),
+
+                      // ── Recent Matches ─────────────────────────────────
+                      _SectionHeader(title: 'Recent Matches'),
+                      const SizedBox(height: 12),
+                      _MatchList(controller: controller),
+                      const SizedBox(height: 32),
+                    ]),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Football decoration (top right corner)
+// ─────────────────────────────────────────────────────────────────────────────
+class _FootballDecoration extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return CommonWidgets.appIcons(
+      assetName: IconConstants.icBackFoodbal,
+      height: 260,
+      width: 200,
+    );
+  }
+}
+
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Profile Card
+// ─────────────────────────────────────────────────────────────────────────────
+class _ProfileCard extends StatelessWidget {
+  final ProfileScreenController controller;
+
+  const _ProfileCard({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    return _GlassCard(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ── Avatar row ──────────────────────────────────────────────
+            Row(
+              children: [
+                // Avatar circle — replace with Image.asset for custom avatar
+                Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: _accentGreen, width: 2),
+                    color: const Color(0xFF1A3A00),
+                  ),
+                  child: const Center(
+                    child: Text('🦸', style: TextStyle(fontSize: 32)),
+                  ),
+                ),
+                const SizedBox(width: 12),
+
+                Expanded(
+                  child: Obx(
+                    () => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          controller.username.value,
+                          style: const TextStyle(
+                            color: _textWhite,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          'Level ${controller.level.value}',
+                          style: const TextStyle(
+                            color: _textGrey,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // Edit icon
+                GestureDetector(
+                  onTap: controller.onEditProfile,
+                  child: Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: _accentGreen.withValues(alpha: 0.15),
+                    ),
+                    child: const Icon(
+                      Icons.edit_rounded,
+                      color: _textWhite,
+                      size: 18,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 16),
+
+            // ── XP row ──────────────────────────────────────────────────
+            Obx(
+              () => Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Level ${controller.level.value}',
+                    style: const TextStyle(
+                      color: _textWhite,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  Text(
+                    '${controller.currentXP.value} / ${controller.maxXP.value} XP',
+                    style: const TextStyle(
+                      color: Color(0xFFEFB000),
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 6),
+
+            // ── XP progress bar ──────────────────────────────────────────
+            Obx(
+              () => ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: LinearProgressIndicator(
+                  value: controller.xpProgress,
+                  minHeight: 8,
+                  backgroundColor: const Color(0xFF1A3A00),
+                  valueColor: const AlwaysStoppedAnimation<Color>(
+                    Color(0xFFEFB000),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Section header
+// ─────────────────────────────────────────────────────────────────────────────
+class _SectionHeader extends StatelessWidget {
+  final String title;
+
+  const _SectionHeader({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      title,
+      style: const TextStyle(
+        color: _textWhite,
+        fontSize: 22,
+        fontWeight: FontWeight.w900,
+        letterSpacing: 0.2,
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Statistics 2×2 grid
+// ─────────────────────────────────────────────────────────────────────────────
+class _StatisticsGrid extends StatelessWidget {
+  final ProfileScreenController controller;
+
+  const _StatisticsGrid({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    // Obx is placed here so .value reads happen directly inside the closure
+    return Obx(() {
+      final stats = [
+        _StatItem(
+          icon: '🏆',
+          label: 'Total Matches',
+          value: controller.totalMatches.value.toString(),
+        ),
+        _StatItem(
+          icon: '⚪',
+          label: 'Total Wins',
+          value: controller.totalWins.value.toString(),
+        ),
+        _StatItem(
+          icon: '📊',
+          label: 'Win Rate',
+          value: controller.winRate.value,
+        ),
+        _StatItem(
+          icon: '🎥',
+          label: 'Total Earnings',
+          value: controller.totalEarnings.value,
+        ),
+      ];
+      return GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
+          childAspectRatio: 1.25,
+        ),
+        itemCount: stats.length,
+        itemBuilder: (_, i) => _StatCard(item: stats[i]),
+      );
+    });
+  }
+}
+
+class _StatItem {
+  final String icon, label, value;
+
+  const _StatItem({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+}
+
+class _StatCard extends StatelessWidget {
+  final _StatItem item;
+
+  const _StatCard({required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    return _GlassCard(
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(item.icon, style: const TextStyle(fontSize: 28)),
+            const SizedBox(height: 6),
+            Text(
+              item.label,
+              style: const TextStyle(color: _textGrey, fontSize: 12),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              item.value,
+              style: const TextStyle(
+                color: _textWhite,
+                fontSize: 22,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Achievements grid
+// ─────────────────────────────────────────────────────────────────────────────
+class _AchievementsGrid extends StatelessWidget {
+  final ProfileScreenController controller;
+
+  const _AchievementsGrid({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      final list = controller.achievements.toList();
+      return GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+          childAspectRatio: 0.95,
+        ),
+        itemCount: list.length,
+        itemBuilder: (_, i) => _AchievementCard(model: list[i]),
+      );
+    });
+  }
+}
+
+class _AchievementCard extends StatelessWidget {
+  final AchievementModel model;
+
+  const _AchievementCard({required this.model});
+
+  @override
+  Widget build(BuildContext context) {
+    return _GradientBorderBox(
+      borderRadius: const BorderRadius.all(Radius.circular(16)),
+      gradientColors: model.unlocked
+          ? const [_gradBorderTop, _gradBorderBottom]
+          : const [Color(0x33FFFFFF), Color(0x11FFFFFF)],
+      child: ClipRRect(
+        borderRadius: const BorderRadius.all(Radius.circular(16)),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(16)),
+              color: _cardBg,
+            ),
+            child: Stack(
+              children: [
+                // Lock icon (top-right) for locked achievements
+                if (!model.unlocked)
+                  const Positioned(
+                    top: 8,
+                    right: 8,
+                    child: Icon(Icons.lock_rounded, color: _textGrey, size: 14),
+                  ),
+
+                // Content
+                Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Emoji / icon — replace with Image.asset if needed
+                      ColorFiltered(
+                        colorFilter: model.unlocked
+                            ? const ColorFilter.mode(
+                                Colors.transparent,
+                                BlendMode.multiply,
+                              )
+                            : const ColorFilter.matrix([
+                                0.2126,
+                                0.7152,
+                                0.0722,
+                                0,
+                                0,
+                                0.2126,
+                                0.7152,
+                                0.0722,
+                                0,
+                                0,
+                                0.2126,
+                                0.7152,
+                                0.0722,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                1,
+                                0,
+                              ]),
+                        child: Text(
+                          model.emoji,
+                          style: const TextStyle(fontSize: 34),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        model.label,
+                        style: TextStyle(
+                          color: model.unlocked ? _textWhite : _textGrey,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Recent Match list
+// ─────────────────────────────────────────────────────────────────────────────
+class _MatchList extends StatelessWidget {
+  final ProfileScreenController controller;
+
+  const _MatchList({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      final matches = controller.recentMatches.toList();
+      return Column(
+        children: matches
+            .map(
+              (m) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: _MatchRow(match: m),
+              ),
+            )
+            .toList(),
+      );
+    });
+  }
+}
+
+class _MatchRow extends StatelessWidget {
+  final MatchModel match;
+
+  const _MatchRow({required this.match});
+
+  @override
+  Widget build(BuildContext context) {
+    return _GlassCard(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Row(
+          children: [
+            // Trophy or X icon
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: match.won
+                    ? const Color(0xFF2A5A00)
+                    : const Color(0xFF5A0000),
+              ),
+              child: Center(
+                child: match.won
+                    ? const Text('🏆', style: TextStyle(fontSize: 18))
+                    : const Icon(
+                        Icons.cancel_rounded,
+                        color: _txNegative,
+                        size: 22,
+                      ),
+              ),
+            ),
+            const SizedBox(width: 12),
+
+            // Won / Lost + time
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    match.won ? 'Won' : 'Lost',
+                    style: const TextStyle(
+                      color: _textWhite,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    match.timeAgo,
+                    style: const TextStyle(color: _textGrey, fontSize: 12),
+                  ),
+                ],
+              ),
+            ),
+
+            // Score + coins
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  match.score,
+                  style: const TextStyle(
+                    color: _textWhite,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Row(
+                  children: [
+                    Text(
+                      match.coins >= 0 ? '+${match.coins}' : '${match.coins}',
+                      style: TextStyle(
+                        color: match.coins >= 0 ? _txPositive : _txNegative,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    const Text('🪙', style: TextStyle(fontSize: 13)),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Reusable glass card
+// ─────────────────────────────────────────────────────────────────────────────
+class _GlassCard extends StatelessWidget {
+  final Widget child;
+
+  const _GlassCard({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    const borderRadius = BorderRadius.all(Radius.circular(20));
+    return _GradientBorderBox(
+      borderRadius: borderRadius,
+      child: ClipRRect(
+        borderRadius: borderRadius,
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: borderRadius,
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.white.withValues(alpha: 0.10),
+                  Colors.white.withValues(alpha: 0.04),
+                ],
+              ),
+            ),
+            child: child,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Gradient border box  (your provided painter — kept exactly as-is)
+// ─────────────────────────────────────────────────────────────────────────────
+class _GradientBorderBox extends StatelessWidget {
+  final Widget child;
+  final BorderRadius borderRadius;
+  final List<Color> gradientColors;
+
+  const _GradientBorderBox({
+    required this.child,
+    required this.borderRadius,
+    this.gradientColors = const [_gradBorderTop, _gradBorderBottom],
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      painter: _GradientBorderPainter(
+        borderRadius: borderRadius,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: gradientColors,
+        ),
+        strokeWidth: 1.5,
+      ),
+      child: child,
+    );
+  }
+}
+
+class _GradientBorderPainter extends CustomPainter {
+  final BorderRadius borderRadius;
+  final LinearGradient gradient;
+  final double strokeWidth;
+
+  const _GradientBorderPainter({
+    required this.borderRadius,
+    required this.gradient,
+    required this.strokeWidth,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rect = Offset.zero & size;
+    final rRect = borderRadius.toRRect(rect);
+    final paint = Paint()
+      ..shader = gradient.createShader(rect)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth;
+    canvas.drawRRect(rRect, paint);
+  }
+
+  @override
+  bool shouldRepaint(_GradientBorderPainter old) =>
+      old.gradient != gradient || old.strokeWidth != strokeWidth;
+}
