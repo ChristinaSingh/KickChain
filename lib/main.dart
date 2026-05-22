@@ -44,7 +44,10 @@ Future<void> main() async {
 
   // ── Push notifications ────────────────────────────────────
   if (kIsWeb) {
-    await PushNotificationService().initialize();
+    // Keep first paint fast on web; do not block startup on notification flows.
+    Future<void>(() async {
+      await PushNotificationService().initialize(requestPermission: false);
+    });
   } else if (defaultTargetPlatform == TargetPlatform.android) {
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 

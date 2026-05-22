@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:get/get.dart';
 
@@ -32,8 +33,11 @@ class REGISTERScreenView extends GetView<REGISTERScreenController> {
                       shape: BoxShape.circle,
                       border: Border.all(color: glassBorder),
                     ),
-                    child: const Icon(Icons.arrow_back_rounded,
-                        color: Colors.white, size: 20),
+                    child: const Icon(
+                      Icons.arrow_back_rounded,
+                      color: Colors.white,
+                      size: 20,
+                    ),
                   ),
                 ),
               ],
@@ -49,40 +53,60 @@ class REGISTERScreenView extends GetView<REGISTERScreenController> {
             const SizedBox(height: 28),
 
             // Avatar picker
-            Obx(() => GestureDetector(
-              onTap: controller.pickAvatar,
-              child: Stack(
-                children: [
-                  CircleAvatar(
-                    radius: 48,
-                    backgroundColor: glassBg,
-                    backgroundImage: controller.avatarFile.value != null
-                        ? FileImage(controller.avatarFile.value!)
-                        : null,
-                    child: controller.avatarFile.value == null
-                        ? const Icon(Icons.person_rounded,
-                        size: 50, color: Colors.white38)
-                        : null,
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: Container(
-                      width: 30,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: primaryColor,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                            color: const Color(0xFF053300), width: 2),
+            Obx(
+              () => GestureDetector(
+                onTap: controller.pickAvatar,
+                child: Stack(
+                  children: [
+                    () {
+                      ImageProvider? avatarImage;
+                      if (kIsWeb &&
+                          controller.avatarWebPreviewUrl.value.isNotEmpty) {
+                        avatarImage = NetworkImage(
+                          controller.avatarWebPreviewUrl.value,
+                        );
+                      } else if (controller.avatarFile.value != null) {
+                        avatarImage = FileImage(controller.avatarFile.value!);
+                      }
+
+                      return CircleAvatar(
+                        radius: 48,
+                        backgroundColor: glassBg,
+                        backgroundImage: avatarImage,
+                        child: avatarImage == null
+                            ? const Icon(
+                                Icons.person_rounded,
+                                size: 50,
+                                color: Colors.white38,
+                              )
+                            : null,
+                      );
+                    }(),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color: primaryColor,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: const Color(0xFF053300),
+                            width: 2,
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.camera_alt_rounded,
+                          size: 14,
+                          color: Colors.white,
+                        ),
                       ),
-                      child: const Icon(Icons.camera_alt_rounded,
-                          size: 14, color: Colors.white),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            )),
+            ),
             const SizedBox(height: 6),
             Text(
               'Tap to add photo',
@@ -123,24 +147,26 @@ class REGISTERScreenView extends GetView<REGISTERScreenController> {
                       validator: controller.validatePhone,
                     ),
                     const SizedBox(height: 16),
-                    Obx(() => GlassTextField(
-                      controller: controller.passwordCtrl,
-                      label: 'Password',
-                      hint: 'Create a strong password',
-                      prefixIcon: Icons.lock_outline,
-                      obscureText: controller.obscurePass.value,
-                      validator: controller.validatePassword,
-                      suffixIcon: GestureDetector(
-                        onTap: controller.togglePassword,
-                        child: Icon(
-                          controller.obscurePass.value
-                              ? Icons.visibility_off_outlined
-                              : Icons.visibility_outlined,
-                          color: Colors.white54,
-                          size: 20,
+                    Obx(
+                      () => GlassTextField(
+                        controller: controller.passwordCtrl,
+                        label: 'Password',
+                        hint: 'Create a strong password',
+                        prefixIcon: Icons.lock_outline,
+                        obscureText: controller.obscurePass.value,
+                        validator: controller.validatePassword,
+                        suffixIcon: GestureDetector(
+                          onTap: controller.togglePassword,
+                          child: Icon(
+                            controller.obscurePass.value
+                                ? Icons.visibility_off_outlined
+                                : Icons.visibility_outlined,
+                            color: Colors.white54,
+                            size: 20,
+                          ),
                         ),
                       ),
-                    )),
+                    ),
                     const SizedBox(height: 18),
 
                     // Gender selector
@@ -149,36 +175,32 @@ class REGISTERScreenView extends GetView<REGISTERScreenController> {
                       children: [
                         Text('Gender', style: MyTextStyle.inputLabel),
                         const SizedBox(height: 10),
-                        Obx(() => Row(
-                          children: [
-                            _GenderChip(
-                              label: 'Male',
-                              icon: Icons.male_rounded,
-                              selected:
-                              controller.gender.value == 'male',
-                              onTap: () =>
-                                  controller.setGender('male'),
-                            ),
-                            const SizedBox(width: 12),
-                            _GenderChip(
-                              label: 'Female',
-                              icon: Icons.female_rounded,
-                              selected:
-                              controller.gender.value == 'female',
-                              onTap: () =>
-                                  controller.setGender('female'),
-                            ),
-                            const SizedBox(width: 12),
-                            _GenderChip(
-                              label: 'Other',
-                              icon: Icons.transgender_rounded,
-                              selected:
-                              controller.gender.value == 'other',
-                              onTap: () =>
-                                  controller.setGender('other'),
-                            ),
-                          ],
-                        )),
+                        Obx(
+                          () => Row(
+                            children: [
+                              _GenderChip(
+                                label: 'Male',
+                                icon: Icons.male_rounded,
+                                selected: controller.gender.value == 'male',
+                                onTap: () => controller.setGender('male'),
+                              ),
+                              const SizedBox(width: 12),
+                              _GenderChip(
+                                label: 'Female',
+                                icon: Icons.female_rounded,
+                                selected: controller.gender.value == 'female',
+                                onTap: () => controller.setGender('female'),
+                              ),
+                              const SizedBox(width: 12),
+                              _GenderChip(
+                                label: 'Other',
+                                icon: Icons.transgender_rounded,
+                                selected: controller.gender.value == 'other',
+                                onTap: () => controller.setGender('other'),
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 14),
@@ -196,18 +218,23 @@ class REGISTERScreenView extends GetView<REGISTERScreenController> {
                           color: errorRedColor.withOpacity(0.15),
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(
-                              color: errorRedColor.withOpacity(0.4)),
+                            color: errorRedColor.withOpacity(0.4),
+                          ),
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.error_outline,
-                                color: errorRedColor, size: 18),
+                            const Icon(
+                              Icons.error_outline,
+                              color: errorRedColor,
+                              size: 18,
+                            ),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
                                 controller.errorMsg.value,
-                                style: MyTextStyle.errorText
-                                    .copyWith(fontSize: 13),
+                                style: MyTextStyle.errorText.copyWith(
+                                  fontSize: 13,
+                                ),
                               ),
                             ),
                           ],
@@ -217,12 +244,14 @@ class REGISTERScreenView extends GetView<REGISTERScreenController> {
 
                     const SizedBox(height: 8),
 
-                    Obx(() => GradientButton(
-                      label: 'Create Account',
-                      isLoading: controller.isLoading.value,
-                      colors: const [shopStart, shopEnd],
-                      onTap: controller.register,
-                    )),
+                    Obx(
+                      () => GradientButton(
+                        label: 'Create Account',
+                        isLoading: controller.isLoading.value,
+                        colors: const [shopStart, shopEnd],
+                        onTap: controller.register,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -271,9 +300,7 @@ class _GenderChip extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
-            color: selected
-                ? primaryColor.withOpacity(0.25)
-                : inputFillColor,
+            color: selected ? primaryColor.withOpacity(0.25) : inputFillColor,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: selected ? primaryColor : inputBorderColor,
@@ -282,17 +309,18 @@ class _GenderChip extends StatelessWidget {
           ),
           child: Column(
             children: [
-              Icon(icon,
-                  color: selected ? primaryColor : Colors.white54,
-                  size: 20),
+              Icon(
+                icon,
+                color: selected ? primaryColor : Colors.white54,
+                size: 20,
+              ),
               const SizedBox(height: 4),
               Text(
                 label,
                 style: TextStyle(
                   color: selected ? primaryColor : Colors.white54,
                   fontSize: 11,
-                  fontWeight:
-                  selected ? FontWeight.w700 : FontWeight.w500,
+                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                 ),
               ),
             ],

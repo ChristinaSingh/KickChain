@@ -41,7 +41,8 @@ import '../modules/leaderBoardScreen/views/leader_board_screen_view.dart';
 import '../modules/privacyPOlicy/bindings/privacy_p_olicy_binding.dart';
 import '../modules/privacyPOlicy/views/privacy_p_olicy_view.dart';
 import '../modules/profile_screen/bindings/profile_screen_binding.dart';
-import '../modules/profile_screen/views/profile_screen_view.dart' hide ProfileScreenView;
+import '../modules/profile_screen/views/profile_screen_view.dart'
+    hide ProfileScreenView;
 import '../modules/termsConditions/bindings/terms_conditions_binding.dart';
 import '../modules/termsConditions/views/terms_conditions_view.dart';
 
@@ -50,9 +51,14 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.SPLASH_SCREEN;
+  static const INITIAL = '/';
 
   static final routes = [
+    GetPage(
+      name: '/',
+      page: () => const SplashScreenView(),
+      binding: SplashScreenBinding(),
+    ),
     GetPage(
       name: _Paths.HOME,
       page: () => const HomeScreen(),

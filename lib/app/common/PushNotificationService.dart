@@ -27,13 +27,15 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 class PushNotificationService {
   FirebaseMessaging fcm = FirebaseMessaging.instance;
 
-  Future initialize() async {
+  Future initialize({bool requestPermission = true}) async {
     if (kIsWeb) {
-      await FirebaseMessaging.instance.requestPermission(
-        alert: true,
-        badge: true,
-        sound: true,
-      );
+      if (requestPermission) {
+        await FirebaseMessaging.instance.requestPermission(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
+      }
 
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
         print('Got a web foreground message!');
@@ -43,7 +45,9 @@ class PushNotificationService {
         }
       });
 
-      await getToken();
+      if (requestPermission) {
+        await getToken();
+      }
       return;
     }
 

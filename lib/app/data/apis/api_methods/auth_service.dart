@@ -1,6 +1,7 @@
 // lib/data/apis/api_methods/auth_service.dart
 
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:dio/dio.dart';
 
 import '../api_constants/api_url_constants.dart';
@@ -24,19 +25,32 @@ class AuthService {
     required String password,
     required String gender,
     File? avatarFile,
+    Uint8List? avatarBytes,
+    String? avatarFileName,
   }) async {
     try {
+      dynamic avatarMultipart;
+      if (avatarBytes != null && avatarBytes.isNotEmpty) {
+        avatarMultipart = MultipartFile.fromBytes(
+          avatarBytes,
+          filename: (avatarFileName != null && avatarFileName.isNotEmpty)
+              ? avatarFileName
+              : 'avatar.jpg',
+        );
+      } else if (avatarFile != null) {
+        avatarMultipart = await MultipartFile.fromFile(
+          avatarFile.path,
+          filename: avatarFile.path.split('/').last,
+        );
+      }
+
       final formData = FormData.fromMap({
         'name': name,
         'email': email,
         'phoneNumber': phoneNumber,
         'password': password,
         'gender': gender,
-        if (avatarFile != null)
-          'avatar': await MultipartFile.fromFile(
-            avatarFile.path,
-            filename: avatarFile.path.split('/').last,
-          ),
+        if (avatarMultipart != null) 'avatar': avatarMultipart,
       });
 
       final response = await _dio.post(

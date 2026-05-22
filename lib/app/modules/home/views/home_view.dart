@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kickchain/app/data/constants/string_constants.dart';
@@ -536,7 +537,8 @@ class GradientGlassAvatar extends StatelessWidget {
     }
 
     // File Image
-    if (filePath != null && filePath!.isNotEmpty) {
+    // dart:io File APIs are unsupported on web.
+    if (!kIsWeb && filePath != null && filePath!.isNotEmpty) {
       final file = File(filePath!);
       if (file.existsSync()) {
         return Image.file(

@@ -13,7 +13,7 @@ class ApiUrlConstants {
 
   static const String endPointOfFaqs = '/user/faqs';
   static const String endPointOfPrivacyPolicy = '/user/privacy-policy';
-  static const String endPointOfTermsAndConditions = '/user/terms-conditions';
+  static const String endPointOfTermsAndConditions = '/user/privacy-policy';
   static const String endPointOfAllUsers = '/user/all';
 
   // Notification Settings

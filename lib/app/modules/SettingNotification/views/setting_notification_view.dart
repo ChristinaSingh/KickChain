@@ -19,7 +19,8 @@ const Color _divider = Color(0x1AFFFFFF);
 // ─────────────────────────────────────────────────────────────────────────────
 //  NotificationSettingsScreen
 // ─────────────────────────────────────────────────────────────────────────────
-class NotificationSettingsScreen extends GetView<SettingNotificationController> {
+class NotificationSettingsScreen
+    extends GetView<SettingNotificationController> {
   const NotificationSettingsScreen({super.key});
 
   static const _radius = BorderRadius.all(Radius.circular(20));
@@ -200,7 +201,7 @@ class NotificationSettingsScreen extends GetView<SettingNotificationController> 
           'Notification Settings',
           style: TextStyle(
             color: _textPrimary,
-            fontSize: 22,
+            fontSize: 20,
             fontWeight: FontWeight.w800,
             letterSpacing: 0.3,
           ),
@@ -289,11 +290,7 @@ class NotificationSettingsScreen extends GetView<SettingNotificationController> 
         padding: const EdgeInsets.all(32),
         child: Column(
           children: [
-            Icon(
-              Icons.wifi_off_rounded,
-              color: Colors.red.shade300,
-              size: 48,
-            ),
+            Icon(Icons.wifi_off_rounded, color: Colors.red.shade300, size: 48),
             const SizedBox(height: 16),
             Text(
               'Failed to load settings',
@@ -304,14 +301,16 @@ class NotificationSettingsScreen extends GetView<SettingNotificationController> 
               ),
             ),
             const SizedBox(height: 8),
-            Obx(() => Text(
-              controller.errorMessage.value,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.55),
-                fontSize: 13,
+            Obx(
+              () => Text(
+                controller.errorMessage.value,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.55),
+                  fontSize: 13,
+                ),
               ),
-            )),
+            ),
             const SizedBox(height: 20),
             ElevatedButton.icon(
               onPressed: controller.fetchNotificationSettings,
@@ -342,7 +341,7 @@ class NotificationSettingsScreen extends GetView<SettingNotificationController> 
   Widget _buildContent() {
     return _glassCard(
       child: Obx(
-            () => Column(
+        () => Column(
           children: [
             _toggleRow(
               icon: Icons.sports_soccer_rounded,
@@ -631,8 +630,7 @@ class _ThumbWidget extends StatelessWidget {
         ],
       ),
       child: Center(
-        child: customIcon ??
-            Text('⚽', style: TextStyle(fontSize: size * 0.62)),
+        child: customIcon ?? Text('⚽', style: TextStyle(fontSize: size * 0.62)),
       ),
     );
   }
@@ -645,10 +643,7 @@ class _GradientBorderBox extends StatelessWidget {
   final Widget child;
   final BorderRadius borderRadius;
 
-  const _GradientBorderBox({
-    required this.child,
-    required this.borderRadius,
-  });
+  const _GradientBorderBox({required this.child, required this.borderRadius});
 
   @override
   Widget build(BuildContext context) {

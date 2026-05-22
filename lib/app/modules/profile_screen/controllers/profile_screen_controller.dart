@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -102,6 +103,17 @@ class ProfileScreenController2 extends GetxController {
   }
 
   Future<void> pickAvatarFromGallery() async {
+    if (kIsWeb) {
+      Get.snackbar(
+        'Not supported on web',
+        'Avatar upload from local file is currently mobile-only.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.black54,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
     final picker = ImagePicker();
     final xFile = await picker.pickImage(
       source: ImageSource.gallery,

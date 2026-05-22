@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
 import '../common/colors.dart';
@@ -34,6 +35,7 @@ class _FunCoinsMatchScreenState extends State<FunCoinsMatchScreen> {
   }
 
   Future<void> _initWalletService() async {
+    if (kIsWeb) return;
     try {
       final ws = WalletService.to;
       if (!ws.isAppKitReady) {
@@ -147,6 +149,7 @@ class _RealMoneyMatchScreenState extends State<RealMoneyMatchScreen> {
   }
 
   Future<void> _initWalletService() async {
+    if (kIsWeb) return;
     try {
       final ws = WalletService.to;
       if (!ws.isAppKitReady) {
@@ -311,12 +314,14 @@ class _PulsingLoaderState extends State<_PulsingLoader>
       duration: const Duration(milliseconds: 1200),
     )..repeat(reverse: true);
 
-    _scaleAnim = Tween<double>(begin: 0.95, end: 1.05).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
-    _opacityAnim = Tween<double>(begin: 0.6, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _scaleAnim = Tween<double>(
+      begin: 0.95,
+      end: 1.05,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+    _opacityAnim = Tween<double>(
+      begin: 0.6,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -428,7 +433,7 @@ class _TopBar extends StatelessWidget {
           ),
           const Spacer(),
           Obx(
-                () => _CoinPill(
+            () => _CoinPill(
               balance: ctrl.coinBalance.value,
               isRealMoney: isRealMoney,
             ),
@@ -523,15 +528,15 @@ class _CoinUsdtSwitchState extends State<CoinUsdtSwitch> {
           borderRadius: BorderRadius.circular(50),
           gradient: isUsdt
               ? const LinearGradient(
-            colors: [Color(0xFF8AD9C6), Color(0xFF0F7B63)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          )
+                  colors: [Color(0xFF8AD9C6), Color(0xFF0F7B63)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
               : const LinearGradient(
-            colors: [Color(0xFFFFD54F), Color(0xFFFFA000)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+                  colors: [Color(0xFFFFD54F), Color(0xFFFFA000)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
         ),
         child: Stack(
           alignment: Alignment.center,
@@ -575,7 +580,7 @@ class _MatchTypeToggle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(
-          () => Row(
+      () => Row(
         children: [
           Expanded(
             child: GestureDetector(
@@ -586,19 +591,19 @@ class _MatchTypeToggle extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: ctrl.isRandomMatch.value
                       ? const LinearGradient(
-                    colors: [playMatchStart, playMatchEnd],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  )
+                          colors: [playMatchStart, playMatchEnd],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        )
                       : null,
                   color: ctrl.isRandomMatch.value ? null : Colors.transparent,
                   borderRadius: BorderRadius.circular(30),
                   border: ctrl.isRandomMatch.value
                       ? null
                       : Border.all(
-                    color: Colors.white.withOpacity(0.3),
-                    width: 1,
-                  ),
+                          color: Colors.white.withOpacity(0.3),
+                          width: 1,
+                        ),
                 ),
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -628,24 +633,28 @@ class _MatchTypeToggle extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: !ctrl.isRandomMatch.value
                       ? const LinearGradient(
-                    colors: [playMatchStart, playMatchEnd],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  )
+                          colors: [playMatchStart, playMatchEnd],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        )
                       : null,
                   color: !ctrl.isRandomMatch.value ? null : Colors.transparent,
                   borderRadius: BorderRadius.circular(30),
                   border: !ctrl.isRandomMatch.value
                       ? null
                       : Border.all(
-                    color: Colors.white.withOpacity(0.3),
-                    width: 1,
-                  ),
+                          color: Colors.white.withOpacity(0.3),
+                          width: 1,
+                        ),
                 ),
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.person_add_rounded, color: Colors.white, size: 18),
+                    Icon(
+                      Icons.person_add_rounded,
+                      color: Colors.white,
+                      size: 18,
+                    ),
                     SizedBox(width: 6),
                     Text(
                       'Invite Friend',
@@ -874,14 +883,14 @@ class _StakeGrid extends StatelessWidget {
               Expanded(
                 child: hasSecond
                     ? _StakeButton(
-                  ctrl: ctrl,
-                  tier: tier,
-                  index: i + 1,
-                  label: amounts[i + 1],
-                  isVip: isVip,
-                  isFunCoins: isFunCoins,
-                  isSelected: ctrl.isSelected(tier, i + 1),
-                )
+                        ctrl: ctrl,
+                        tier: tier,
+                        index: i + 1,
+                        label: amounts[i + 1],
+                        isVip: isVip,
+                        isFunCoins: isFunCoins,
+                        isSelected: ctrl.isSelected(tier, i + 1),
+                      )
                     : const SizedBox.shrink(),
               ),
             ],
@@ -923,8 +932,8 @@ class _StakeButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? (isVip
-              ? const Color(0xFFEFB000).withOpacity(0.18)
-              : primaryColor.withOpacity(0.18))
+                    ? const Color(0xFFEFB000).withOpacity(0.18)
+                    : primaryColor.withOpacity(0.18))
               : const Color(0xFF0D3D0A).withAlpha(40),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
@@ -1131,9 +1140,9 @@ class _StartMatchButton extends StatelessWidget {
               gradient: LinearGradient(
                 colors: isLoading
                     ? [
-                  playMatchStart.withOpacity(0.6),
-                  playMatchEnd.withOpacity(0.6)
-                ]
+                        playMatchStart.withOpacity(0.6),
+                        playMatchEnd.withOpacity(0.6),
+                      ]
                     : [playMatchStart, playMatchEnd],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,

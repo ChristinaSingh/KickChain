@@ -22,10 +22,7 @@ class WalletConnectSheet extends StatelessWidget {
     VoidCallback? onConnected,
   }) {
     return Get.bottomSheet(
-      WalletConnectSheet(
-        onConnected: onConnected,
-        parentContext: context,
-      ),
+      WalletConnectSheet(onConnected: onConnected, parentContext: context),
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       enableDrag: true,
@@ -75,10 +72,7 @@ class _SheetScaffold extends StatelessWidget {
             color: const Color(0xCC041A0B),
             borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
             border: Border(
-              top: BorderSide(
-                color: Colors.white.withOpacity(0.12),
-                width: 1,
-              ),
+              top: BorderSide(color: Colors.white.withOpacity(0.12), width: 1),
             ),
           ),
           child: Column(
@@ -145,20 +139,87 @@ class _ConnectView extends StatelessWidget {
         const SizedBox(height: 28),
 
         Obx(
-              () => _GradientButton(
+          () => _GradientButton(
             label: ws.isConnecting.value ? 'Connecting…' : 'Connect Wallet',
             icon: ws.isConnecting.value
                 ? const _SpinIcon()
                 : const Icon(
-              Icons.account_balance_wallet_rounded,
-              color: Colors.white,
-              size: 20,
-            ),
+                    Icons.account_balance_wallet_rounded,
+                    color: Colors.white,
+                    size: 20,
+                  ),
             onTap: ws.isConnecting.value
                 ? null
                 : () => ws.openConnectModal(parentContext),
           ),
         ),
+        if (ws.isTelegramMobileContext) ...[
+          const SizedBox(height: 12),
+          Text(
+            'Telegram Mini App detected. Open a wallet app, approve, then come back and tap Check Connection.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.7),
+              fontSize: 12,
+              height: 1.4,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: ws.isConnecting.value
+                      ? null
+                      : () =>
+                            ws.openWalletAppForTelegram(WebWalletApp.metamask),
+                  icon: const Icon(
+                    Icons.open_in_new,
+                    size: 16,
+                    color: Colors.white,
+                  ),
+                  label: const Text('Open MetaMask'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    side: BorderSide(color: Colors.white.withOpacity(0.35)),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: ws.isConnecting.value
+                      ? null
+                      : () => ws.openWalletAppForTelegram(
+                          WebWalletApp.trustWallet,
+                        ),
+                  icon: const Icon(
+                    Icons.open_in_new,
+                    size: 16,
+                    color: Colors.white,
+                  ),
+                  label: const Text('Open Trust'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    side: BorderSide(color: Colors.white.withOpacity(0.35)),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          OutlinedButton(
+            onPressed: ws.isConnecting.value ? null : ws.checkWebConnection,
+            style: OutlinedButton.styleFrom(
+              foregroundColor: Colors.white,
+              side: BorderSide(color: primaryColor.withOpacity(0.8)),
+              padding: const EdgeInsets.symmetric(vertical: 12),
+            ),
+            child: const Text('Check Connection'),
+          ),
+        ],
         const SizedBox(height: 12),
 
         TextButton(
@@ -335,23 +396,25 @@ class _ConnectedStatsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => Row(
-      children: [
-        _StatCard(
-          label: 'Wallet Balance',
-          value: ws.walletBalance.value,
-          icon: Icons.account_balance_wallet_outlined,
-        ),
-        const SizedBox(width: 12),
-        _StatCard(
-          label: 'Network',
-          value: ws.connectedChain.value.isEmpty
-              ? 'Unknown'
-              : ws.connectedChain.value,
-          icon: Icons.hub_outlined,
-        ),
-      ],
-    ));
+    return Obx(
+      () => Row(
+        children: [
+          _StatCard(
+            label: 'Wallet Balance',
+            value: ws.walletBalance.value,
+            icon: Icons.account_balance_wallet_outlined,
+          ),
+          const SizedBox(width: 12),
+          _StatCard(
+            label: 'Network',
+            value: ws.connectedChain.value.isEmpty
+                ? 'Unknown'
+                : ws.connectedChain.value,
+            icon: Icons.hub_outlined,
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -374,10 +437,7 @@ class _StatCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.06),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: Colors.white.withOpacity(0.1),
-            width: 1,
-          ),
+          border: Border.all(color: Colors.white.withOpacity(0.1), width: 1),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -417,9 +477,9 @@ class _FeaturePills extends StatelessWidget {
   const _FeaturePills();
 
   static const _features = [
-    (Icons.lock_outline_rounded,     'Secure & Non-custodial'),
-    (Icons.flash_on_rounded,         'Instant Deposits'),
-    (Icons.emoji_events_outlined,    'Win Real Rewards'),
+    (Icons.lock_outline_rounded, 'Secure & Non-custodial'),
+    (Icons.flash_on_rounded, 'Instant Deposits'),
+    (Icons.emoji_events_outlined, 'Win Real Rewards'),
   ];
 
   @override
@@ -475,10 +535,7 @@ class _GlowIcon extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             gradient: RadialGradient(
-              colors: [
-                primaryColor.withOpacity(0.30),
-                Colors.transparent,
-              ],
+              colors: [primaryColor.withOpacity(0.30), Colors.transparent],
             ),
           ),
         ),
@@ -584,9 +641,10 @@ class _SpinIcon extends StatefulWidget {
 
 class _SpinIconState extends State<_SpinIcon>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _ctrl =
-  AnimationController(vsync: this, duration: const Duration(seconds: 1))
-    ..repeat();
+  late final AnimationController _ctrl = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 1),
+  )..repeat();
 
   @override
   void dispose() {
@@ -598,11 +656,7 @@ class _SpinIconState extends State<_SpinIcon>
   Widget build(BuildContext context) {
     return RotationTransition(
       turns: _ctrl,
-      child: const Icon(
-        Icons.refresh_rounded,
-        color: Colors.white,
-        size: 20,
-      ),
+      child: const Icon(Icons.refresh_rounded, color: Colors.white, size: 20),
     );
   }
 }

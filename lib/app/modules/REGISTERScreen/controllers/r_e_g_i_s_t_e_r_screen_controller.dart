@@ -1,6 +1,8 @@
 // lib/modules/register_screen/controllers/r_e_g_i_s_t_e_r_screen_controller.dart
 
 import 'dart:io';
+import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,17 +13,20 @@ import '../../../routes/app_pages.dart';
 class REGISTERScreenController extends GetxController {
   final _authService = AuthService();
 
-  final formKey      = GlobalKey<FormState>();
-  final nameCtrl     = TextEditingController();
-  final emailCtrl    = TextEditingController();
-  final phoneCtrl    = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+  final nameCtrl = TextEditingController();
+  final emailCtrl = TextEditingController();
+  final phoneCtrl = TextEditingController();
   final passwordCtrl = TextEditingController();
 
-  final RxBool    isLoading   = false.obs;
-  final RxBool    obscurePass = true.obs;
-  final RxString  errorMsg    = ''.obs;
-  final RxString  gender      = 'male'.obs;
-  final Rx<File?> avatarFile  = Rx<File?>(null);
+  final RxBool isLoading = false.obs;
+  final RxBool obscurePass = true.obs;
+  final RxString errorMsg = ''.obs;
+  final RxString gender = 'male'.obs;
+  final Rx<File?> avatarFile = Rx<File?>(null);
+  final Rx<Uint8List?> avatarBytes = Rx<Uint8List?>(null);
+  final RxString avatarWebPreviewUrl = ''.obs;
+  final RxString avatarFileName = ''.obs;
 
   final _picker = ImagePicker();
 
@@ -36,7 +41,16 @@ class REGISTERScreenController extends GetxController {
       imageQuality: 80,
     );
     if (picked != null) {
-      avatarFile.value = File(picked.path);
+      avatarFileName.value = picked.name;
+      if (kIsWeb) {
+        avatarBytes.value = await picked.readAsBytes();
+        avatarWebPreviewUrl.value = picked.path;
+        avatarFile.value = null;
+      } else {
+        avatarFile.value = File(picked.path);
+        avatarBytes.value = null;
+        avatarWebPreviewUrl.value = '';
+      }
     }
   }
 
@@ -97,9 +111,13 @@ class REGISTERScreenController extends GetxController {
         password: passwordCtrl.text,
         gender: gender.value,
         avatarFile: avatarFile.value,
+        avatarBytes: avatarBytes.value,
+        avatarFileName: avatarFileName.value,
       );
 
-      print("Registration result: success=${result.success}, message=${result.message}");
+      print(
+        "Registration result: success=${result.success}, message=${result.message}",
+      );
 
       if (result.success == true) {
         Get.snackbar(
@@ -114,7 +132,8 @@ class REGISTERScreenController extends GetxController {
           arguments: {'email': emailCtrl.text.trim()},
         );
       } else {
-        errorMsg.value = result.message ?? 'Registration failed. Please try again.';
+        errorMsg.value =
+            result.message ?? 'Registration failed. Please try again.';
         _showErrorSnackbar(errorMsg.value);
       }
     } catch (e) {

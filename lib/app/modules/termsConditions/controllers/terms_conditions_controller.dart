@@ -1,10 +1,11 @@
 import 'package:get/get.dart';
+import '../../../common/storage_service.dart';
 import '../../../data/apis/user_api_service.dart';
 import '../../../data/apis/api_models/policy_response_model.dart';
 
 class TermsOfServiceController extends GetxController {
   final UserApiService _apiService = UserApiService();
-  
+  final _storage = StorageService();
   final Rxn<PolicyData> termsData = Rxn<PolicyData>();
   final RxBool isLoading = false.obs;
 

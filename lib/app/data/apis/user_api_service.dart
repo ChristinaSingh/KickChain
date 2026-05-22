@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import '../../common/storage_service.dart';
 import 'api_constants/api_url_constants.dart';
 import 'api_methods/dio_client.dart';
 import 'api_models/faq_response_model.dart';
@@ -8,6 +9,7 @@ import 'api_models/user_list_response_model.dart';
 
 class UserApiService {
   final Dio _dio = DioClient().dio;
+  final _storage = StorageService();
 
   Future<FaqResponseModel> getFaqs() async {
     try {
@@ -25,8 +27,20 @@ class UserApiService {
   }
 
   Future<PolicyResponseModel> getPrivacyPolicy() async {
+    final String? userToken = _storage.getToken();
     try {
-      final response = await _dio.get(ApiUrlConstants.endPointOfPrivacyPolicy);
+      final headers = <String, String>{
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      };
+      if (userToken != null && userToken.isNotEmpty) {
+        headers['Authorization'] = 'Bearer $userToken';
+      }
+
+      final response = await _dio.get(
+        ApiUrlConstants.endPointOfPrivacyPolicy,
+        options: Options(headers: headers),
+      );
       if (response.statusCode == 200 || response.statusCode == 201) {
         return PolicyResponseModel.fromJson(response.data);
       } else {
@@ -40,9 +54,19 @@ class UserApiService {
   }
 
   Future<PolicyResponseModel> getTermsConditions() async {
+    final String? userToken = _storage.getToken();
     try {
+      final headers = <String, String>{
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      };
+      if (userToken != null && userToken.isNotEmpty) {
+        headers['Authorization'] = 'Bearer $userToken';
+      }
+
       final response = await _dio.get(
         ApiUrlConstants.endPointOfTermsAndConditions,
+        options: Options(headers: headers),
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
         return PolicyResponseModel.fromJson(response.data);
